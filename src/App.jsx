@@ -1,61 +1,57 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Login from './components/Auth/Login'
-import EmployeeDashboard from './components/Dashboard/EmployeeDashboard'
-import AdminDashboard from './components/Dashboard/AdminDashboard'
-import { AuthContext } from './context/AuthProvider'
+import { AuthContext } from './context/AuthProvider';
+import AdminDashboard from './components/Dashboard/AdminDashboard';
+import EmployeeDashboard from './components/Dashboard/EmployeeDashboard';
 
 const App = () => {
-
+  
   const data = useContext(AuthContext);
+    const [user, setUser] = useState(null);
+    console.log(data[0]);
+    console.log(data[1]);
 
-  const [user, setUser] = useState(null);
-  const [loggedInUser, setLoggedInUser] = useState(null);
+    const employees = data[0] || [];
+    const admin = data[1] || [];
   
-  useEffect(() => {
+    const allUsers = [...employees, ...admin];
 
-    if(data){
-      const currentUser = JSON.parse(localStorage.getItem('loggedInUser'));
-      if (currentUser) {
-        setUser(currentUser.role);
-        if (currentUser.role === "employee") {
-          setLoggedInUser(currentUser.employee);
-        }
+    const handleLogin = (email, password) => {
+
+      const currentUser = allUsers.find((e) => e.email === email && e.password === password);     
+      
+      if(currentUser && currentUser.user === "admin"){
+        setUser(currentUser);
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
       }
-    }
-
-  }, [data])
-  
-
-  const handleLogin = (email, password) => {
-
-    if(email === 'admin@example.com' && password === '123') {
-      setUser('admin');
-      localStorage.setItem('loggedInUser', JSON.stringify({ role: 'admin'}));
-      console.log(user);
-    }
-    else if(data){
-      const employee = data.employees && data.employees.find((e) => e.email === email && e.password === password);
-      if(employee){
-        setUser('employee');
-        setLoggedInUser(employee);
-        localStorage.setItem('loggedInUser', JSON.stringify({ role: 'employee', employee}));
-        console.log(user);
+      else if(currentUser && currentUser.user === "employee"){
+        setUser(currentUser);
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
       }
-    }
-    else{
-      console.log('Invalid Credentials');
-    } 
+      else{
+        setUser(null);
+        alert("Invalid credentials");
+      }
 
-  }
+    }
+
+    useEffect(() => {
+      const storedUser = JSON.parse(localStorage.getItem('currentUser'));
+      setUser(storedUser);
+    }, [])
+    
+    
 
   return (
-  <>
-    {!user && <Login handleLogin={handleLogin} />}
-    {user === 'admin' && <AdminDashboard />}
-    {user === 'employee' && <EmployeeDashboard data={loggedInUser} />}
-  </>
-)
+    <>
+      {!user ? (<Login handleLogin={handleLogin} />) : user.user === "admin" ? (
+        <AdminDashboard user={user} />
+      ) : (
+        <EmployeeDashboard user={user} />
+      )}
 
+    </>
+  )
 }
 
 export default App
