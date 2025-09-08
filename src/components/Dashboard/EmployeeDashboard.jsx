@@ -7,8 +7,8 @@ const EmployeeDashboard = ({ user }) => {
   return (
     <div className='p-10 bg-[#1C1C1C] min-h-screen'>
         <Header user={user} />
-        <TaskListNumbers />
-        <TaskList />
+        <TaskListNumbers user={user} />
+        <TaskList user={user} />
     </div>
   )
 }

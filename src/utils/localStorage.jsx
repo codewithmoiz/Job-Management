@@ -300,7 +300,7 @@ const admin = [
   {
     "id": 1,
     "user": "admin",
-    "name": "Admin User",
+    "name": "Moiz",
     "email": "admin@example.com",
     "password": "123"
   }

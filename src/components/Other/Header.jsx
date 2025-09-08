@@ -8,7 +8,7 @@ const Header = ({ user }) => {
           localStorage.removeItem('currentUser');
           window.location.reload();
         }}
-        className='bg-red-600 text-base font-medium text-white px-5 py-2 rounded-sm cursor-pointer'>Log Out</button>
+        className='bg-red-600 text-base font-medium text-white px-5 py-2 rounded-sm cursor-pointer'>Logout</button>
     </div>
   )
 }
